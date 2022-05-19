@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "P146UU/Nbis2mEVEFHykm1znXVj5q5+zJ+Fij37kG4k+UAX04+hdiL8GCVKNHTSVt0tn/lgNUIWcCGnqNB5OlA==",
+  "dgSpecHash": "ax1EkCN4knE1lQYw8vMOCwlk+lw5B0zopg2aceD7sVjBC3UfluDwKdk6BP1L9RPshsiGFSKGy5AgfCJjhJC52Q==",
   "success": true,
-  "projectFilePath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v003\\tetris.csproj",
+  "projectFilePath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\tetris.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
