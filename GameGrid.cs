@@ -7,9 +7,9 @@ namespace tetris
     public class GameGrid
     {
         // tamanho da gamegrid
-        private int gridSize = 96;
-        private int gridRows = 12;
-        private int gridCols = 8;
+        private int gridSize = 200;
+        private int gridRows = 20;
+        private int gridCols = 10;
 
         // cores da grid
         private string activePieceColor = "Green";
@@ -284,23 +284,23 @@ namespace tetris
             // contador com o combo do tetris (numero de linhas limpas)
             int combo = 0;
             // contador para verificar se existe linha (precisa ter 8)
-            int line8 = 0;
+            int tetrisLine = 0;
             // loop decrescente com o numero de pos da grid
             for (int i = (gridSize - 1); i >= 0; i--)
             {
                 /* se estivermos posicionados na ultima pos da linha
-                 resetar o line8, visto que estamos a decresacer */
+                 resetar o tetrisLine, visto que estamos a decresacer */
                 if ((i + 1) % gridCols == 0)
                 {
-                    line8 = 0;
+                    tetrisLine = 0;
                 }
-                /* se a pos tiver "X", acrescentar o line8 */
+                /* se a pos tiver "X", acrescentar o tetrisLine */
                 if (gameGridValues[i].Contains("X"))
                 {
-                    line8++;
+                    tetrisLine++;
                 }
                 // Tetris baby
-                if (line8 == 8)
+                if (tetrisLine == gridCols)
                 {
                     // limpa a ultima linha
                     for (int i2 = (i + gridCols - 1); i2 >= i; i2--)
@@ -534,7 +534,7 @@ namespace tetris
             for (int i = 0; i < activePiecePos.Count; i++)
             {
                 {
-                    if ((activePiecePos[i] + 1) % 8 == 0) { canMove = false; }
+                    if ((activePiecePos[i] + 1) % gridCols == 0) { canMove = false; }
                     else
                     {
                         // adicionar 1 unidade da pos, e adicionar a nova pos a uma nova lista
@@ -1168,7 +1168,7 @@ namespace tetris
         {
             // muda a cor da consola para vermelho
             Console.ForegroundColor = ConsoleColor.Red;
-            System.Console.WriteLine("|##########################|");
+            System.Console.WriteLine("================================== ");
             // muda a cor da consola para branco
             Console.ForegroundColor = ConsoleColor.White;
         }
