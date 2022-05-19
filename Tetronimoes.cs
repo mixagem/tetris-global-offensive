@@ -6,6 +6,7 @@ namespace tetris
     {
         public int height;
         public int width;
+        public List<string> desenho;
         public Tetronimoes(string piece)
         {
             switch (piece)
@@ -13,75 +14,39 @@ namespace tetris
                 case "O":
                     height = 2;
                     width = 2;
+                    desenho = new List<string>{"O","O","O","O","O","X","X","O","O","X","X","O","O","O","O","O"};
                     break;
                 case "I":
                     height = 4;
                     width = 1;
+                    desenho = new List<string>{"O","O","X","O","O","O","X","O","O","O","X","O","O","O","X","O"};
                     break;
                 case "S":
                     height = 2;
                     width = 3;
+                    desenho = new List<string>{"O","O","O","O","O","O","X","X","O","X","X","O","O","O","O","O"};
                     break;
                 case "Z":
                     height = 2;
                     width = 3;
+                    desenho = new List<string>{"O","O","O","O","O","X","X","O","O","O","X","X","O","O","O","O"};
                     break;
                 case "L":
                     height = 3;
                     width = 2;
+                    desenho = new List<string>{"O","O","O","O","O","X","O","O","O","X","O","O","O","X","X","O"};
                     break;
                 case "J":
                     height = 3;
                     width = 2;
+                    desenho = new List<string>{"O","O","O","O","O","O","X","O","O","O","X","O","O","X","X","O"};
                     break;
                 case "T":
                     height = 2;
                     width = 3;
+                    desenho = new List<string>{"O","O","O","O","O","X","X","X","O","O","X","O","O","O","O","O"};
                     break;
             }
         }
-
-        private List<string> Piece_O()
-        {
-            string[] hitbox = { "+", "+", "+", "+" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_I()
-        {
-            string[] hitbox = { "+", "+", "+", "+" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_S()
-        {
-            string[] hitbox = { "+", "+", "O", "O", "+", "+" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_Z()
-        {
-            string[] hitbox = { "O", "+", "+", "+", "+", "O" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_L()
-        {
-            string[] hitbox = { "+", "+", "+", "O", "+", "O" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_J()
-        {
-            string[] hitbox = { "+", "+", "O", "+", "O", "+" };
-            return new List<string>(hitbox);
-        }
-
-        private List<string> Piece_T()
-        {
-            string[] hitbox = { "O", "+", "O", "+", "+", "+" };
-            return new List<string>(hitbox);
-        }
-
     }
 }

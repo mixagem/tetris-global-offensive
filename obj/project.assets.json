@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Arquivo\\Web Design\\C#\\tetris\\v002\\tetris.csproj",
+      "projectUniqueName": "D:\\Arquivo\\Web Design\\C#\\tetris\\v003\\tetris.csproj",
       "projectName": "tetris",
-      "projectPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v002\\tetris.csproj",
+      "projectPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v003\\tetris.csproj",
       "packagesPath": "C:\\Users\\Mixagem\\.nuget\\packages\\",
-      "outputPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v002\\obj\\",
+      "outputPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v003\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Mixagem\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -6,34 +6,50 @@ namespace tetris
 {
     public class GameGrid
     {
-        // tamanho da gamegrid
+        // tamanho da gamegrid (gridCols x número de alinhas. [20x10] default)
         private int gridSize = 200;
-        private int gridRows = 20;
         private int gridCols = 10;
+
+
 
         // cores da grid
         private string activePieceColor = "Green";
         private string placedPieceColor = "Yellow";
         private string borderColor = "Red";
-        private string scoreTitleColor = "Cyan";
-        private string scoreValueColor = "Green";
-        private string messageTextColor = "DarkRed";
-        private string nextPieceTitleColor = "DarkMagenta";
-        private string nextPieceTextColor = "Blue";
+        private string color1 = "Cyan";
+        private string color2 = "DarkMagenta";
+        private string color3 = "Yellow";
+        private string gameOverColor1 = "Red";
+        private string gameOverColor2 = "Yellow";
+        private List<string> nextPieceColors = new List<string> { "DarkGreen", "Cyan", "Magenta", "DarkRed", "DarkYellow", "White", "Blue" };
+
+        // "locales"
+        private List<string> scoreTitleString = new List<string> { " __   __   __   __   ___", "/__` /  ` /  \\ |__) |__ ", ".__/ \\__, \\__/ |  \\ |___"};
+        private List<string> nextPieceTitleString = new List<string> { "      ___     ___     __     ___  __   ___", "|\\ | |__  \\_/  |     |__) | |__  /  ` |__", "| \\| |___ / \\  |     |    | |___ \\__, |___"};
+
+        private List<string> nextPieceSketch = new List<string>{"","","",""};
+
+        private List<string> gameOverString = new List<string> { " ██████╗ █████╗███╗   ██████████╗", "██╔════╝██╔══██████╗ ██████╔════╝", "██║  ████████████╔████╔███████╗", "██║   ████╔══████║╚██╔╝████╔══╝", "╚██████╔██║  ████║ ╚═╝ █████████╗", " ╚═════╝╚═╝  ╚═╚═╝     ╚═╚══════╝", "                   ██████╗██╗   ███████████████╗", "                  ██╔═══████║   ████╔════██╔══██╗", "                  ██║   ████║   ███████╗ ██████╔╝", "                  ██║   ██╚██╗ ██╔██╔══╝ ██╔══██╗", "                  ╚██████╔╝╚████╔╝█████████║  ██║", "                   ╚═════╝  ╚═══╝ ╚══════╚═╝  ╚═╝" };
+        // game seetings 
+        private int scoreMultiplier = 25;
+        private string fillType =".";
+        private string busyType ="B";
+        private string activeType ="C";
 
         // lista com os valores de todos os campos do jogo
         private List<string> gameGridValues = new List<string>();
 
-        // o jogo começa com -10pts, porque a primeira peça é "free"
-        private int score = -10;
+        // o jogo começa com -1*(scoremultiplier), porque a primeira peça é "free"
+        private int score = -25;
         // rotação da peça
         private int pieceRotation = 0;
         // validador para saber se é o primeiro spawn ou não
         private bool pieceFirstCycle = true;
         // lista default peças
+        // private List<string> tetronimoesList = new List<string> { "I" };
         private List<string> tetronimoesList = new List<string> { "I", "O", "S", "Z", "L", "J", "T" };
         // // lista de peças disponiveis para spawn
-        private List<string> activeTetronimoesList = new List<string> { "I", "O", "S", "Z", "L", "J", "T" };
+        private List<string> activeTetronimoesList = new List<string>();
         // peça ativa, necessário saber para flips e whatevers
         private string activePiece;
         // necessários para mostrar no preview
@@ -55,7 +71,8 @@ namespace tetris
 
         public GameGrid()
         {
-            System.Console.WriteLine("Tetris zoeira. Carrega no enter para começar");
+            Console.Clear();
+            mainscreenLogo();
             if (Console.ReadKey().Key == ConsoleKey.Enter)
             {
                 gameStart();
@@ -65,13 +82,41 @@ namespace tetris
                 System.Console.WriteLine("Volta outra vez quando estiveres pronto.");
             }
         }
+        public GameGrid(bool restart)
+        {
+            Console.Clear();
+            gameStart();
+        }
+
+        private string stringConverter(string toconvert) {
+            string convertedString = toconvert.Replace("X",busyType);
+            string convertedString2 = convertedString.Replace("O",fillType); 
+            return convertedString2;
+        }
+        private void mainscreenLogo()
+        {
+            System.Console.WriteLine("");
+            ConsoleWriter.WriteLine(colorfullLine("  _____    _        {FC=" + color1 + "}_{/FC}        {FC=" + color2 + "}____ {/FC}                      _        "));
+            ConsoleWriter.WriteLine(colorfullLine(" |_   _|__| |_ _ __{FC=" + color1 + "}(_){/FC}___   {FC=" + color2 + "}/ ___|{/FC} __ _ _ __   __ _ ___| |_ __ _ "));
+            ConsoleWriter.WriteLine(colorfullLine("   | |/ _ \\ __| '__| / __| {FC=" + color2 + "}| |  _{/FC} / _` | '_ \\ / _` / __| __/ _` |"));
+            ConsoleWriter.WriteLine(colorfullLine("   | |  __/ |_| |  | \\__ \\ {FC=" + color2 + "}| |_| |{/FC} (_| | | | | (_| \\__ \\ || (_| |"));
+            ConsoleWriter.WriteLine(colorfullLine("   |_|\\___|\\__|_|  |_|___/ {FC=" + color2 + "} \\____|{/FC}\\__,_|_| |_|\\__, |___/\\__\\__,_|"));
+            ConsoleWriter.WriteLine(colorfullLine("                                              |___/              "));
+            System.Console.WriteLine("");
+            ConsoleWriter.WriteLine(colorfullLine("                          {FC=" + color3 + "}Press Start{/FC}"));
+            System.Console.WriteLine("");
+        }
 
         private void gameStart()
         {
             // reseta a grid
             for (int i = 0; i < gridSize; i++)
             {
-                gameGridValues.Add("O");
+                // extra validação para quando estamos a recomeçar o jogo
+                if (gameGridValues.Count != gridSize)
+                {
+                    gameGridValues.Add(fillType);
+                }
             }
             // faz spawn da primeira peça
             spawnPiece();
@@ -83,7 +128,7 @@ namespace tetris
         private void spawnPiece()
         {
             // por cada nova peça em jogo, 10pts
-            score += 10;
+            score += scoreMultiplier;
             // reseta a rotação da peça
             pieceRotation = 0;
             // limpa as nossas peças ativas
@@ -103,8 +148,10 @@ namespace tetris
                 // gera uma nova peça seguinte
                 nextPiece = rngPiece();
             }
-            // construtor da peça
+            // construtor das peças
             Tetronimoes newPiece = new Tetronimoes(activePiece);
+
+
             // faz loop para todos os items das linhas da grid, conforme altura da peça
             for (int i = 0; i < (newPiece.height * gridCols) - 1; i++)
             {
@@ -231,13 +278,31 @@ namespace tetris
             // se depois das validações houver gameover, podemos bazar do programa
             if (gameOver)
             {
-                System.Console.WriteLine("jafoste. rip. press space to bazar");
+                Console.Clear();
+                System.Console.WriteLine("     ");
+                System.Console.WriteLine("     ");
+                System.Console.WriteLine("     ");
+                foreach (string linha in gameOverString)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    string coloredLinha = linha.Replace("█", "{FC=" + gameOverColor1 + "}█{/FC}");
+                    ConsoleWriter.WriteLine(colorfullLine("     " + coloredLinha));
+                    Console.ForegroundColor = ConsoleColor.White;
+                };
+                System.Console.WriteLine("     ");
+                System.Console.WriteLine("     ");
+                ConsoleWriter.WriteLine(colorfullLine("                        {FC=Green}Score:{/FC} " + score + ""));
+                System.Console.WriteLine("     ");
+                ConsoleWriter.WriteLine(colorfullLine("           Carrega {FC=Yellow}R{/FC} para {FC=Yellow}Recomeçar{/FC} ou {FC=Magenta}Q{/FC} para {FC=Magenta}Sair{/FC}."));
+                System.Console.WriteLine("     ");
+                finalScreenListener(Console.ReadKey().Key);
             }
             else
             {
                 // verificar se houve tetris
                 checkForTetris();
                 updateGameGridWithNewPiece();
+                updateNextPiecePreview(nextPiece);
                 refreshGameGrid();
                 playerKeyListener(Console.ReadKey().Key);
             }
@@ -264,10 +329,74 @@ namespace tetris
             return selectedPiece;
         }
 
+        // utilizada para atualizar a lista com a peça seguinte 
+        private string newPieceLineString;
+        private void updateNextPiecePreview(string nextTetroPiece)
+        {
+            // construtor da peça, para obter o preview
+            Tetronimoes newPiece = new Tetronimoes(nextTetroPiece);
+
+            // contador para ajudar a colocar na lista
+            int i2 = 0;
+
+            // para cada pixel do desenho
+            for (int i = 0; i < newPiece.desenho.Count; i++)
+            {
+                // criar string com os pixeis
+                newPieceLineString += stringConverter(newPiece.desenho[i]);
+
+                // se está na última col do desenho
+                if ((i + 1) % 4 == 0)
+                {
+                    // manda para a lista a linha completa
+                    nextPieceSketch[i2] = beautifyPiece(newPieceLineString, nextTetroPiece);
+                    // atualiza o contador da lista
+                    i2++;
+                    // reseta a linha tmeporaria
+                    newPieceLineString = "";
+                }
+            }
+        }
+
+        // utilizada para escolher a cor da proxima peça
+        private string nextPieceColor;
+        private string beautifyPiece(string pieceLineToBeautify, string piece)
+        {
+            // update piece color 
+            switch (piece)
+            {
+                case "I":
+                    nextPieceColor = nextPieceColors[0];
+                    break;
+                case "O":
+                    nextPieceColor = nextPieceColors[1];
+                    break;
+                case "Z":
+                    nextPieceColor = nextPieceColors[2];
+                    break;
+                case "S":
+                    nextPieceColor = nextPieceColors[3];
+                    break;
+                case "L":
+                    nextPieceColor = nextPieceColors[4];
+                    break;
+                case "J":
+                    nextPieceColor = nextPieceColors[5];
+                    break;
+                case "T":
+                    nextPieceColor = nextPieceColors[6];
+                    break;
+            }
+
+            string newtext = pieceLineToBeautify.Replace(busyType, "{BC=" + nextPieceColor + "}   {/BC}");
+            string newtext2 = newtext.Replace(fillType, "   ");
+            return newtext2;
+        }
+
         private void spawnGameCheck(int i)
         {
             // se o sitio onde a peça vai fazer spawn estiver ocupado
-            if (gameGridValues[i].Contains("X"))
+            if (gameGridValues[i].Contains(busyType))
             {
                 // gameover baby
                 gameOver = true;
@@ -295,7 +424,7 @@ namespace tetris
                     tetrisLine = 0;
                 }
                 /* se a pos tiver "X", acrescentar o tetrisLine */
-                if (gameGridValues[i].Contains("X"))
+                if (gameGridValues[i].Contains(busyType))
                 {
                     tetrisLine++;
                 }
@@ -305,7 +434,7 @@ namespace tetris
                     // limpa a ultima linha
                     for (int i2 = (i + gridCols - 1); i2 >= i; i2--)
                     {
-                        gameGridValues[i2] = "O";
+                        gameGridValues[i2] = fillType;
                     }
                     // puxa as linhas existentes para baixo 
                     for (int i3 = (i - 1); i3 >= gridCols; i3--)
@@ -316,7 +445,7 @@ namespace tetris
                     // puxar a primeira linha (fora do range do loop anterior)
                     for (int i4 = 0; i4 < gridCols; i4++)
                     {
-                        gameGridValues[i4] = "O";
+                        gameGridValues[i4] = fillType;
                     }
                     // acrescenta o contador do tetris
                     combo++;
@@ -328,23 +457,23 @@ namespace tetris
             switch (combo)
             {
                 case 1:
-                    score += 100;
-                    propz = "Very nice";
+                    score += (scoreMultiplier * 10);
+                    propz = "    bora bora, continua";
                     break;
                 case 2:
-                    score += 250;
-                    propz = "Oh la la";
+                    score += (scoreMultiplier * 25);
+                    propz = "    isto está a aquecer";
                     break;
                 case 3:
-                    score += 450;
-                    propz = "Sabes encaixar tu";
+                    score += (scoreMultiplier * 45);
+                    propz = "vejo que sabes encaixar";
                     break;
                 case 4:
-                    score += 1000;
-                    propz = "Oh my god stop blowing my mind";
+                    score += (scoreMultiplier * 70);
+                    propz = "   stop blowing my mind";
                     break;
                 /* invocado quando posicionamos uma peça, 
-                para esconder a últiam mensagem exibida */
+                para resetar a últina mensagem exibida */
                 default:
                     propz = "";
                     break;
@@ -418,7 +547,7 @@ namespace tetris
         {
             for (int i = 0; i < activePiecePos.Count; i++)
             {
-                gameGridValues[activePiecePos[i]] = "O";
+                gameGridValues[activePiecePos[i]] = fillType;
             }
         }
 
@@ -427,7 +556,7 @@ namespace tetris
             for (int i = 0; i < activePiecePos.Count; i++)
             {
                 // como não pode mexer mais, a peça fica maracad com "X"
-                gameGridValues[activePiecePos[i]] = "X";
+                gameGridValues[activePiecePos[i]] = busyType;
             }
         }
 
@@ -436,7 +565,7 @@ namespace tetris
             for (int i = 0; i < activePiecePos.Count; i++)
             {
                 // como pode mexer  a peça fica maracad com "+"
-                gameGridValues[activePiecePos[i]] = "+";
+                gameGridValues[activePiecePos[i]] = activeType;
             }
         }
 
@@ -569,7 +698,7 @@ namespace tetris
         private void moveCheck(int i)
         {
             // se passar para fora da grid, ou caso a nova posição esteja ocupada
-            if (i > (gridSize - 1) || gameGridValues[i].Contains("X"))
+            if (i > (gridSize - 1) || gameGridValues[i].Contains(busyType))
             {
                 canMove = false;
             }
@@ -636,18 +765,26 @@ namespace tetris
                                     // formula para rodar 90 para o bit 1
                                     case 0:
                                         newActivePiecePos.Add(activePiecePos[i] + 1 + gridCols);
+                                        // fazer flipcheck á nova posição
+                                        flipcheck(activePiecePos[i] + 1 + gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 2
                                     case 1:
                                         newActivePiecePos.Add(activePiecePos[i] + (2 * gridCols));
+                                        // fazer flipcheck á nova posição
+                                        flipcheck(activePiecePos[i] + (2 * gridCols));
                                         break;
                                     // formula para rodar 90 para o bit 3
                                     case 2:
                                         newActivePiecePos.Add(activePiecePos[i] + 1 - gridCols);
+                                        // fazer flipcheck á nova posição
+                                        flipcheck(activePiecePos[i] + 1 - gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 4
                                     case 3:
                                         newActivePiecePos.Add(activePiecePos[i]);
+                                        // fazer flipcheck á nova posição
+                                        flipcheck(activePiecePos[i]);
                                         break;
                                 }
                             }
@@ -664,18 +801,22 @@ namespace tetris
                                     // formula para rodar 90 para o bit 1
                                     case 0:
                                         newActivePiecePos.Add(activePiecePos[i] - 1 - gridCols);
+                                        flipcheck(activePiecePos[i] - 1 - gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 2
                                     case 1:
                                         newActivePiecePos.Add(activePiecePos[i] - (2 * gridCols));
+                                        flipcheck(activePiecePos[i] - (2 * gridCols));
                                         break;
                                     // formula para rodar 90 para o bit 3
                                     case 2:
                                         newActivePiecePos.Add(activePiecePos[i] - 1 + gridCols);
+                                        flipcheck(activePiecePos[i] - 1 + gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 4
                                     case 3:
                                         newActivePiecePos.Add(activePiecePos[i]);
+                                        flipcheck(activePiecePos[i]);
                                         break;
                                 }
                             }
@@ -694,18 +835,22 @@ namespace tetris
                                     // formula para rodar 90 para o bit 1
                                     case 0:
                                         newActivePiecePos.Add(activePiecePos[i] + 1);
+                                        flipcheck(activePiecePos[i] + 1);
                                         break;
                                     // formula para rodar 90 para o bit 2
                                     case 1:
                                         newActivePiecePos.Add(activePiecePos[i] + gridCols);
+                                        flipcheck(activePiecePos[i] + gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 3
                                     case 2:
                                         newActivePiecePos.Add(activePiecePos[i] - 1);
+                                        flipcheck(activePiecePos[i] - 1);
                                         break;
                                     // formula para rodar 90 para o bit 4
                                     case 3:
                                         newActivePiecePos.Add(activePiecePos[i] - 2 + gridCols);
+                                        flipcheck(activePiecePos[i] - 2 + gridCols);
                                         break;
                                 }
                             }
@@ -722,18 +867,22 @@ namespace tetris
                                     // formula para rodar 90 para o bit 1
                                     case 0:
                                         newActivePiecePos.Add(activePiecePos[i] - 1);
+                                        flipcheck(activePiecePos[i] - 1);
                                         break;
                                     // formula para rodar 90 para o bit 2
                                     case 1:
                                         newActivePiecePos.Add(activePiecePos[i] - gridCols);
+                                        flipcheck(activePiecePos[i] - gridCols);
                                         break;
                                     // formula para rodar 90 para o bit 3
                                     case 2:
                                         newActivePiecePos.Add(activePiecePos[i] + 1);
+                                        flipcheck(activePiecePos[i] + 1);
                                         break;
                                     // formula para rodar 90 para o bit 4
                                     case 3:
                                         newActivePiecePos.Add(activePiecePos[i] + 2 - gridCols);
+                                        flipcheck(activePiecePos[i] + 2 - gridCols);
                                         break;
                                 }
                             }
@@ -754,18 +903,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 - gridCols);
+                                                flipcheck(activePiecePos[i] + 1 - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 - gridCols);
+                                                flipcheck(activePiecePos[i] - 1 - gridCols);
                                                 break;
                                         }
                                     }
@@ -783,18 +936,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + (2 * gridCols));
+                                                flipcheck(activePiecePos[i] + (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 + gridCols);
+                                                flipcheck(activePiecePos[i] + 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 - gridCols);
+                                                flipcheck(activePiecePos[i] + 1 - gridCols);
                                                 break;
                                         }
                                     }
@@ -812,18 +969,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2 - gridCols);
+                                                flipcheck(activePiecePos[i] - 2 - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1);
+                                                flipcheck(activePiecePos[i] - 1);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + gridCols);
+                                                flipcheck(activePiecePos[i] + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1);
+                                                flipcheck(activePiecePos[i] + 1);
                                                 break;
                                         }
                                     }
@@ -841,18 +1002,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - gridCols);
+                                                flipcheck(activePiecePos[i] - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1);
+                                                flipcheck(activePiecePos[i] - 1);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2 + gridCols);
+                                                flipcheck(activePiecePos[i] - 2 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 + (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - 1 + (2 * gridCols));
                                                 break;
                                         }
                                     }
@@ -876,18 +1041,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + gridCols);
+                                                flipcheck(activePiecePos[i] + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1);
+                                                flipcheck(activePiecePos[i] - 1);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 - (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - 1 - (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2 - gridCols);
+                                                flipcheck(activePiecePos[i] - 2 - gridCols);
                                                 break;
                                         }
                                     }
@@ -905,18 +1074,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2 + gridCols);
+                                                flipcheck(activePiecePos[i] - 2 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1);
+                                                flipcheck(activePiecePos[i] - 1);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1);
+                                                flipcheck(activePiecePos[i] + 1);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] - gridCols);
+                                                flipcheck(activePiecePos[i] - gridCols);
                                                 break;
                                         }
                                     }
@@ -934,18 +1107,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 - gridCols);
+                                                flipcheck(activePiecePos[i] + 1 - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 + gridCols);
+                                                flipcheck(activePiecePos[i] + 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                         }
                                     }
@@ -963,18 +1140,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 + gridCols);
+                                                flipcheck(activePiecePos[i] + 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 + gridCols);
+                                                flipcheck(activePiecePos[i] - 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i] + (2 * gridCols));
+                                                flipcheck(activePiecePos[i] + (2 * gridCols));
                                                 break;
                                         }
                                     }
@@ -997,18 +1178,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 + gridCols);
+                                                flipcheck(activePiecePos[i] + 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + (2 * gridCols));
+                                                flipcheck(activePiecePos[i] + (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i]);
+                                                flipcheck(activePiecePos[i]);
                                                 break;
                                         }
                                     }
@@ -1026,18 +1211,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] + (2 * gridCols));
+                                                flipcheck(activePiecePos[i] + (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 + gridCols);
+                                                flipcheck(activePiecePos[i] - 1 + gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2);
+                                                flipcheck(activePiecePos[i] - 2);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i]);
+                                                flipcheck(activePiecePos[i]);
                                                 break;
                                         }
                                     }
@@ -1055,18 +1244,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - 2);
+                                                flipcheck(activePiecePos[i] - 2);
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] - 1 - gridCols);
+                                                flipcheck(activePiecePos[i] - 1 - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] - (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i]);
+                                                flipcheck(activePiecePos[i]);
                                                 break;
                                         }
                                     }
@@ -1084,18 +1277,22 @@ namespace tetris
                                             // formula para rodar 90 para o bit 1
                                             case 0:
                                                 newActivePiecePos.Add(activePiecePos[i] - (2 * gridCols));
+                                                flipcheck(activePiecePos[i] - (2 * gridCols));
                                                 break;
                                             // formula para rodar 90 para o bit 2
                                             case 1:
                                                 newActivePiecePos.Add(activePiecePos[i] + 1 - gridCols);
+                                                flipcheck(activePiecePos[i] + 1 - gridCols);
                                                 break;
                                             // formula para rodar 90 para o bit 3
                                             case 2:
                                                 newActivePiecePos.Add(activePiecePos[i] + 2);
+                                                flipcheck(activePiecePos[i] + 2);
                                                 break;
                                             // formula para rodar 90 para o bit 4
                                             case 3:
                                                 newActivePiecePos.Add(activePiecePos[i]);
+                                                flipcheck(activePiecePos[i]);
                                                 break;
                                         }
                                     }
@@ -1158,7 +1355,7 @@ namespace tetris
         private void flipcheck(int i)
         {
             // se passar para fora da grid, ou caso a nova posição esteja ocupada
-            if (gameGridValues[i].Contains("X"))
+            if (gameGridValues[i].Contains(busyType))
             {
                 canFlip = false;
             }
@@ -1176,8 +1373,8 @@ namespace tetris
         private string colorfullLine(string text)
         {
             // substitui os "X" e os "+" pelas respetivas cores
-            string newtext = text.Replace(" X ", "{BC=" + placedPieceColor + "}   {/BC}");
-            string newtext2 = newtext.Replace(" + ", "{BC=" + activePieceColor + "}   {/BC}");
+            string newtext = text.Replace($" {busyType} ", "{BC=" + placedPieceColor + "}   {/BC}");
+            string newtext2 = newtext.Replace($" {activeType} ", "{BC=" + activePieceColor + "}   {/BC}");
             return newtext2;
         }
 
@@ -1192,20 +1389,41 @@ namespace tetris
             foreach (var gridValue in gameGridValues)
             {
                 // se for a primeira posição da linha, reseta o gameGridRowInString com o border
-                if (i == 0 || i % gridCols == 0) { gameGridRowInString = "{FC=" + borderColor + "}|{/FC} "; }
+                if (i == 0 || i % gridCols == 0) { gameGridRowInString = "{FC=" + borderColor + "}█{/FC} "; }
                 // adiciona o valor da pos, com o evido espaçamento
                 gameGridRowInString += " " + gridValue + " ";
                 // se for a última posição da linha
                 if ((i + 1) % gridCols == 0)
                 {
                     // fecha o border
-                    gameGridRowInString += " {FC=" + borderColor + "}|{/FC}";
-                    // para a primeira linha, adicionamos o score
-                    if (i == ((1 * gridCols) - 1)) { gameGridRowInString += "  {FC=" + scoreTitleColor + "} Score: {/FC}{FC=" + scoreValueColor + "}" + score + "{/FC}"; }
-                    // para a terceira linha, adicionamos a mensagem
-                    if (i == ((3 * gridCols) - 1)) { gameGridRowInString += "  {FC=" + messageTextColor + "}" + propz + "{/FC}"; }
-                    // para a quinta linha, adicionamos o score
-                    if (i == ((5 * gridCols) - 1)) { gameGridRowInString += "  {FC=" + nextPieceTitleColor + "} Próxima peça: {/FC}{FC=" + nextPieceTextColor + "}" + nextPiece + "{/FC}"; }
+                    gameGridRowInString += " {FC=" + borderColor + "}█{/FC}";
+                    // formula para obter o número da linha onde o loop está
+                    var numLinha = ((i + 1) / gridCols);
+                    // adicionar o título score  [preciso 3 linhas]
+                    if (numLinha > 0 && numLinha < 4)
+                    {
+                        gameGridRowInString += "              "+scoreTitleString[numLinha-1];
+                    };
+                    // mostrar o score
+                    if (numLinha == 5)
+                    {
+                        gameGridRowInString += "                        " + score;
+                    }
+                    // mostrar a mensagem
+                    if (numLinha == 8)
+                    {
+                        gameGridRowInString += "            "+propz;
+                    }
+                    //  título da próxima peça  
+                    if (numLinha > 9 && numLinha < 13)
+                    {
+                        gameGridRowInString += "     " + nextPieceTitleString[numLinha - 10];
+                    };
+                    // mostrar a próxima peça
+                    if (numLinha > 14 && numLinha < 19)
+                    {
+                        gameGridRowInString += "                    " + nextPieceSketch[numLinha - 15];
+                    }
                     // escreve a linha completa
                     ConsoleWriter.WriteLine(colorfullLine(gameGridRowInString));
                 }
@@ -1214,6 +1432,31 @@ namespace tetris
             }
             // introduzir a margem superior
             writeRedMargins();
+        }
+
+        private void finalScreenListener(ConsoleKey key)
+        {
+
+            switch (key)
+            {
+                case ConsoleKey.Q:
+                    {
+                        Environment.Exit(0);
+                    }
+                    break;
+                case ConsoleKey.R:
+                    {
+                        Console.Clear();
+                        var mytetrisgame = new GameGrid(true);
+                    }
+                    break;
+                default:
+                    {
+                        break;
+                    }
+
+            }
+
         }
         /////////////////// class end ////////////////////////
     }
