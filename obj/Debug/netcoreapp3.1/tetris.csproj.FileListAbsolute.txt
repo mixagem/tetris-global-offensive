@@ -102,16 +102,3 @@ D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.csproj.CoreC
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.dll
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.pdb
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.genruntimeconfig.cache
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.exe
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.deps.json
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.runtimeconfig.json
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.runtimeconfig.dev.json
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.dll
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\bin\Debug\netcoreapp3.1\tetris.pdb
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.csprojAssemblyReference.cache
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.AssemblyInfoInputs.cache
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.AssemblyInfo.cs
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.csproj.CoreCompileInputs.cache
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.dll
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.pdb
-D:\Arquivo\Web Design\C#\tetris\v004 (broken autoscroller)\obj\Debug\netcoreapp3.1\tetris.genruntimeconfig.cache

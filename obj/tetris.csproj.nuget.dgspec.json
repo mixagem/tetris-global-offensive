@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\tetris.csproj": {}
+    "D:\\Arquivo\\Web Design\\C#\\tetris\\v005\\tetris.csproj": {}
   },
   "projects": {
-    "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\tetris.csproj": {
+    "D:\\Arquivo\\Web Design\\C#\\tetris\\v005\\tetris.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\tetris.csproj",
+        "projectUniqueName": "D:\\Arquivo\\Web Design\\C#\\tetris\\v005\\tetris.csproj",
         "projectName": "tetris",
-        "projectPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\tetris.csproj",
+        "projectPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v005\\tetris.csproj",
         "packagesPath": "C:\\Users\\Mixagem\\.nuget\\packages\\",
-        "outputPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v004 (broken autoscroller)\\obj\\",
+        "outputPath": "D:\\Arquivo\\Web Design\\C#\\tetris\\v005\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Mixagem\\AppData\\Roaming\\NuGet\\NuGet.Config"

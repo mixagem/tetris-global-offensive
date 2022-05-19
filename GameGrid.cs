@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Timers;
 
 namespace tetris
 {
@@ -18,12 +17,19 @@ namespace tetris
         public string activePieceColor = "Green";
         public string placedPieceColor = "Yellow";
         public string borderColor = "Red";
-        public string gameOverSpriteColor1 = "Red";
-        public string gameOverSpriteColor2 = "Yellow";
-        public string gameOverScoreColor1 = "Green";
-        public string gameOverScoreColor2 = "White";
-        public string gameOverActionColor1 = "Yellow";
-        public string gameOverActionColor2 = "Magenta";
+        private string loadingSpriteColor1 = "Red";
+        private string loadingSpriteColor2 = "Yellow";
+        private string loadingSpriteColor3 = "Grey";
+        private string scoreTitleColor = "Yellow";
+        private string scoreColor = "Cyan";
+        private string hypeMessageColor = "Magenta";
+        private string nextPieceTitleColor = "Yellow";
+        private string gameOverSpriteColor1 = "Red";
+        private string gameOverSpriteColor2 = "Yellow";
+        private string gameOverScoreColor1 = "Cyan";
+        private string gameOverScoreColor2 = "White";
+        private string gameOverActionColor1 = "Yellow";
+        private string gameOverActionColor2 = "Magenta";
 
         // public game settings 
         public int scoreMultiplier = 25;
@@ -60,16 +66,21 @@ namespace tetris
             "",
             ""
         };
-        private List<string> welcomeTitleSprite = new List<string> {
-            "  _____    _        _        ____                       _",
-            " |_   _|__| |_ _ __(_)__    / ___| __ _ _ __   __ _ ___| |_ __ _",
-            "   | |/ _ \\ __| '__| / __| | |  _ / _` | '_ \\ / _` / __| __/ _` |",
-            "   | |  __/ |_| |  | \\__ \\ | |_| | (_| | | | | (_| \\__ \\ || (_| |",
-            "   |_|\\___|\\__|_|  |_|___/  \\____|\\__,_|_| |_|\\__, |___/\\__\\__,_|",
-            "                                              |___/",
-            "",
-            "                          Press Enter",
-            ""};
+        private List<string> welcomeTitleSprite1 = new List<string> {
+            "           ████████ ███████ ████████ ██████  ██ ███████",
+            "              ██    ██         ██    ██   ██ ██ ██",
+            "              ██    █████      ██    ██████  ██ ███████",
+            "              ██    ██         ██    ██   ██ ██      ██",
+            "              ██    ███████    ██    ██   ██ ██ ███████"
+            };
+        private List<string> welcomeTitleSprite2 = new List<string> {
+            "        __     __        __                         __  _",
+            "  ___ _/ /__  / /  ___ _/ / ___  ___  ___ _______ _/ /_(_)__  ___",
+            " / _ `/ / _ \\/ _ \\/ _ `/ / / _ \\/ _ \\/ -_) __/ _ `/ __/ / _ \\/ _ \\",
+            " \\_, /_/\\___/_.__/\\_,_/_/  \\___/ .__/\\__/_/  \\_,_/\\__/_/\\___/_//_/",
+            "/___/                         /_/",
+            ""
+            };
 
         // Listas
         // Lista default a ser manupilada aquando do desenho da peça seguinte (tem de ser inicializada com 4 itens)
@@ -89,7 +100,6 @@ namespace tetris
         private bool pieceFirstCycle = true;
         private bool gameOver = false;
         private bool canMove = true;
-        private bool autoScrollCanMove = true;
         // mensagem do combo
         private string propz;
 
@@ -106,8 +116,6 @@ namespace tetris
         private string gameGridRowInString;
         private string busyType = "x";
         private string activeType = "+";
-        // timmer do autoscroll
-        System.Timers.Timer scrollTimer;
 
         //////////////////////////////////////////
 
@@ -120,11 +128,18 @@ namespace tetris
         private void mainscreenLogo()
         {
             Console.Clear();
-            foreach (string line in welcomeTitleSprite)
+            foreach (string line in welcomeTitleSprite1)
             {
-                ConsoleWriter.WriteLine(line);
+                string beautyLine = line.Replace("█", "{FC=" + loadingSpriteColor1 + "}█{/FC}");
+                ConsoleWriter.WriteLine(beautyLine);
             }
+            foreach (string line in welcomeTitleSprite2)
+            {
+                ConsoleWriter.WriteLine("{FC=" + loadingSpriteColor2 + "}" + line + "{/FC}");
+            }
+            ConsoleWriter.WriteLine("                            {FC=" + loadingSpriteColor3 + "}Press Enter{/FC}");
         }
+
         // inicia o jogo
         public void gameStart()
         {
@@ -141,12 +156,6 @@ namespace tetris
             // listener para o jogador
             playerKeyListener(Console.ReadKey().Key);
 
-            // iniciar timer do autoscroller
-            scrollTimer = new System.Timers.Timer();
-            scrollTimer.Elapsed += new ElapsedEventHandler(autoScrollPiece);
-            scrollTimer.Interval = 1000;
-            scrollTimer.Enabled = true;
-
             // faz spawn da primeira peça
             spawnPiece();
         }
@@ -154,9 +163,6 @@ namespace tetris
         // metodo para fazer spawn a uma nova peça
         private void spawnPiece()
         {
-            // interrompe o timer do autoscroller
-            scrollTimer.Stop();
-
             // se for a primeira peça do jogo
             if (pieceFirstCycle)
             {
@@ -265,12 +271,21 @@ namespace tetris
             // limpa a consola, mostra o score, e pergunta o utilizador o que fazer
             if (gameOver)
             {
-                // interrompe o timer do autoscroller
-                scrollTimer.Stop();
                 Console.Clear();
-                foreach (string linha in gameOverSrite)
+                for (int i = 0; i< gameOverSrite.Count; i++)
                 {
-                    ConsoleWriter.WriteLine(linha);
+                    string beautyLine="";
+                    for (int i2 = 0; i2 < gameOverSrite[i].Length; i2++)
+                    {
+                        if(gameOverSrite[i][i2]==' '){
+                            beautyLine+= " ";
+                        } else if (gameOverSrite[i][i2]=='█') {
+                            beautyLine+= "{FC="+gameOverSpriteColor1+"}█{/FC}";
+                        } else {
+                            beautyLine+= "{FC="+gameOverSpriteColor2+"}"+gameOverSrite[i][i2]+"{/FC}";
+                        }
+                    }
+                    ConsoleWriter.WriteLine(beautyLine);
                 };
                 ConsoleWriter.WriteLine("                        {FC=" + gameOverScoreColor1 + "}Score:{/FC} {FC=" + gameOverScoreColor2 + "}" + score + "{/FC}");
                 Console.WriteLine("");
@@ -297,9 +312,6 @@ namespace tetris
                 // desenha a grelha de jogo atualizada 
                 refreshGameGrid();
 
-                // recomeça o timer do autoscroller
-                scrollTimer.Start();
-
                 // listener para input do jogador
                 playerKeyListener(Console.ReadKey().Key);
             }
@@ -314,12 +326,12 @@ namespace tetris
 
             int i = 0;
             // para cada valor da grelha
-            for (int i2 =0; i2<gameGridValues.Count; i2++ )
+            foreach (var gridValue in gameGridValues)
             {
                 // se for a primeira posição da linha, reseta o gameGridRowInString com o border
                 if (i == 0 || i % gridCols == 0) { gameGridRowInString = "{FC=" + borderColor + "}█{/FC} "; }
                 // adiciona o valor da pos, com o evido espaçamento
-                gameGridRowInString += " " + gameGridValues[i2] + " ";
+                gameGridRowInString += " " + gridValue + " ";
                 // se for a última posição da linha
                 if ((i + 1) % gridCols == 0)
                 {
@@ -330,22 +342,22 @@ namespace tetris
                     // adicionar o título score  [preciso 3 linhas]
                     if (numLinha > 0 && numLinha < 4)
                     {
-                        gameGridRowInString += "              " + scoreSprite[numLinha - 1];
+                        gameGridRowInString += "{FC=" + scoreTitleColor + "}              " + scoreSprite[numLinha - 1] + "{/FC}";
                     };
                     // mostrar o score
                     if (numLinha == 5)
                     {
-                        gameGridRowInString += "                        " + score;
+                        gameGridRowInString += "{FC=" + scoreColor + "}                        " + score;
                     }
                     // mostrar a mensagem
                     if (numLinha == 8)
                     {
-                        gameGridRowInString += "            " + propz;
+                        gameGridRowInString += "{FC=" + hypeMessageColor + "}            " + propz;
                     }
                     //  título da próxima peça  
                     if (numLinha > 9 && numLinha < 13)
                     {
-                        gameGridRowInString += "     " + nextPieceTitleSprite[numLinha - 10];
+                        gameGridRowInString += "{FC=" + nextPieceTitleColor + "}     " + nextPieceTitleSprite[numLinha - 10];
                     };
                     // mostrar a próxima peça
                     if (numLinha > 14 && numLinha < 19)
@@ -1281,7 +1293,6 @@ namespace tetris
                     }
                     break;
             }
-
             // caso falhe o movecheck
             if (!canMove)
             {
@@ -1291,8 +1302,6 @@ namespace tetris
                 canMove = true;
                 // listener para input do player
                 playerKeyListener(Console.ReadKey().Key);
-                // dizer ao scroller que não dá para scoller mais
-                autoScrollCanMove = false;
             }
             // o jogo continua
             else
@@ -1376,13 +1385,6 @@ namespace tetris
                 default:
                     { break; }
             }
-        }
-
-        // autoscroller
-        private void autoScrollPiece(object source, ElapsedEventArgs e)
-        {
-            // caso possa scrollar, move a peça 1 vez
-            if (autoScrollCanMove) {movePiece("down");} else {scrollTimer.Stop();}
         }
 
         /////////////////// class end ////////////////////////
