@@ -117,8 +117,8 @@ namespace tetris
         private string nextPiece;
         // string da uma linha completa da grid
         private string gameGridRowInString;
-        private string busyType = "x";
-        private string activeType = "+";
+        private string busyType = "X";
+        private string activeType = "O";
 
         //////////////////////////////////////////
 
@@ -133,14 +133,14 @@ namespace tetris
             Console.Clear();
             foreach (string line in welcomeTitleSprite1)
             {
-                string beautyLine = line.Replace("█", "{FC=" + loadingSpriteColor1 + "}█{/FC}");
-                ConsoleWriter.WriteLine(beautyLine);
+                string beautyLine = line.Replace("█", "█");
+                Console.WriteLine(beautyLine);
             }
             foreach (string line in welcomeTitleSprite2)
             {
-                ConsoleWriter.WriteLine("{FC=" + loadingSpriteColor2 + "}" + line + "{/FC}");
+                Console.WriteLine(line + "");
             }
-            ConsoleWriter.WriteLine("                            {FC=" + loadingSpriteColor3 + "}Press Enter{/FC}");
+            Console.WriteLine("                            Press Enter");
         }
 
         // inicia o jogo
@@ -296,18 +296,18 @@ namespace tetris
                         }
                         else if (gameOverSrite[i][i2] == '█')
                         {
-                            beautyLine += "{FC=" + gameOverSpriteColor1 + "}█{/FC}";
+                            beautyLine += "█";
                         }
                         else
                         {
-                            beautyLine += "{FC=" + gameOverSpriteColor2 + "}" + gameOverSrite[i][i2] + "{/FC}";
+                            beautyLine += gameOverSrite[i][i2];
                         }
                     }
-                    ConsoleWriter.WriteLine(beautyLine);
+                    Console.WriteLine(beautyLine);
                 };
-                ConsoleWriter.WriteLine("                        {FC=" + gameOverScoreColor1 + "}Score:{/FC} {FC=" + gameOverScoreColor2 + "}" + score + "{/FC}");
+                Console.WriteLine("                        Score: " + score);
                 Console.WriteLine("");
-                ConsoleWriter.WriteLine("           Carrega {FC=" + gameOverActionColor1 + "}R{/FC} para {FC=" + gameOverActionColor1 + "}Recomeçar{/FC} ou {FC=" + gameOverActionColor2 + "}Q{/FC} para {FC=" + gameOverActionColor2 + "}Sair{/FC}.");
+                Console.WriteLine("           Carrega R para Recomeçar ou Q para Sair.");
                 Console.WriteLine("");
                 // listener do gameover screen
                 finalScreenListener(Console.ReadKey().Key);
@@ -347,35 +347,35 @@ namespace tetris
             foreach (var gridValue in gameGridValues)
             {
                 // se for a primeira posição da linha, reseta o gameGridRowInString com o border
-                if (i == 0 || i % gridCols == 0) { gameGridRowInString = "{FC=" + borderColor + "}█{/FC} "; }
+                if (i == 0 || i % gridCols == 0) { gameGridRowInString = "█"; }
                 // adiciona o valor da pos, com o evido espaçamento
                 gameGridRowInString += " " + gridValue + " ";
                 // se for a última posição da linha
                 if ((i + 1) % gridCols == 0)
                 {
                     // fecha o border
-                    gameGridRowInString += " {FC=" + borderColor + "}█{/FC}";
+                    gameGridRowInString += " █";
                     // formula para obter o número da linha onde o loop está
                     var numLinha = ((i + 1) / gridCols);
                     // adicionar o título score  [preciso 3 linhas]
                     if (numLinha > 0 && numLinha < 4)
                     {
-                        gameGridRowInString += "{FC=" + scoreTitleColor + "}              " + scoreSprite[numLinha - 1] + "{/FC}";
+                        gameGridRowInString += "              " + scoreSprite[numLinha - 1] + "";
                     };
                     // mostrar o score
                     if (numLinha == 5)
                     {
-                        gameGridRowInString += "{FC=" + scoreColor + "}                        " + score;
+                        gameGridRowInString += "                        " + score;
                     }
                     // mostrar a mensagem
                     if (numLinha == 8)
                     {
-                        gameGridRowInString += "{FC=" + hypeMessageColor + "}            " + propz;
+                        gameGridRowInString += "            " + propz;
                     }
                     //  título da próxima peça  
                     if (numLinha > 9 && numLinha < 13)
                     {
-                        gameGridRowInString += "{FC=" + nextPieceTitleColor + "}     " + nextPieceTitleSprite[numLinha - 10];
+                        gameGridRowInString += "     " + nextPieceTitleSprite[numLinha - 10];
                     };
                     // mostrar a próxima peça
                     if (numLinha > 14 && numLinha < 19)
@@ -383,7 +383,7 @@ namespace tetris
                         gameGridRowInString += "                    " + nextPieceSketch[numLinha - 15];
                     }
                     // escreve a linha completa
-                    ConsoleWriter.WriteLine(gameGridColorfulDisplay(gameGridRowInString));
+                    Console.WriteLine(gameGridColorfulDisplay(gameGridRowInString));
                 }
                 // incrementar o contador
                 i++;
@@ -395,15 +395,14 @@ namespace tetris
         // escreve as margens da grelha de jogo
         private void writeRedMargins()
         {
-            ConsoleWriter.WriteLine("{FC=" + borderColor + "}=================================={/FC}");
+            Console.WriteLine("==================================");
         }
 
         // remove os chars das peças ativas e fixas, e pinta o background com a cor selecionada  
         private string gameGridColorfulDisplay(string text)
         {
-            string newtext = text.Replace($" {busyType} ", "{BC=" + placedPieceColor + "}   {/BC}");
-            string newtext2 = newtext.Replace($" {activeType} ", "{BC=" + activePieceColor + "}   {/BC}");
-            return newtext2;
+            // string newtext = text;
+            return text;
         }
 
         // limpa a lista de pos da peça ativa
@@ -497,9 +496,9 @@ namespace tetris
                     break;
             }
 
-            string newtext = pieceLineToBeautify.Replace(busyType, "{BC=" + nextPieceColor + "}   {/BC}");
-            string newtext2 = newtext.Replace(fillType, "   ");
-            return newtext2;
+            // string newtext = pieceLineToBeautify.Replace(busyType, "{BC=" + nextPieceColor + "}   {/BC}");
+            // string newtext2 = newtext.Replace(fillType, "   ");
+            return pieceLineToBeautify;
         }
 
         // verifica se a pos onde o bit vai dar spawn está ocupada ou não 
