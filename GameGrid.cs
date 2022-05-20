@@ -108,7 +108,7 @@ namespace tetris
 
         // private game settings 
         // o jogo começa com -1*(scoremultiplier), porque a primeira peça é "free"
-        private int score = -25;
+        private int score;
         // contador de rotações da peça
         private int pieceRotation = 0;
         // nome da peça ativa
@@ -117,8 +117,9 @@ namespace tetris
         private string nextPiece;
         // string da uma linha completa da grid
         private string gameGridRowInString;
-        private string busyType = "X";
-        private string activeType = "O";
+        private string busyType = "x";
+        private string activeType = "+";
+        private int gameSpeed = 1000;
 
         //////////////////////////////////////////
 
@@ -156,15 +157,17 @@ namespace tetris
                 }
             }
 
+            score=-scoreMultiplier;
+
             // faz spawn da primeira peça
             spawnPiece();
 
             // iniciar timer do autoscroller
             autoscrollerTimer = new System.Timers.Timer();
             autoscrollerTimer.Elapsed += new ElapsedEventHandler(autoscroller);
-            autoscrollerTimer.Interval = 1000;
+            autoscrollerTimer.Interval = gameSpeed;
             autoscrollerTimer.Enabled = true;
-            
+
             while (!gameOver)
             {
                 // listener para o jogador
@@ -409,6 +412,8 @@ namespace tetris
         private void clearActivePiecePos()
         { activePiecePos = new List<int>(); }
 
+
+
         // seletor de peça aleatório
         private string rngPiece()
         {
@@ -587,6 +592,9 @@ namespace tetris
             if (gameOver) { return; } // se o jogo terminar, fechar todos os listeners
             else
             {
+                // fix para o parser do texto coloirido
+                autoscrollerTimer.Stop();
+                autoscrollerTimer.Start();
                 switch (key)
                 {
                     case ConsoleKey.Spacebar:
@@ -634,6 +642,7 @@ namespace tetris
                 restoreLastActivePiecePos("busy");
                 // resetar o canMove
                 canMove = true;
+                autoScrollCanMove = true;
                 // faz spawn à próxima peça, visto que não pode descer mais
                 spawnPiece();
             }
@@ -678,6 +687,7 @@ namespace tetris
         // método para a movimentar/flippar a peça nas direções suportadas
         private void movePiece(string direction)
         {
+
             // lista temp para as pos após descer
             List<int> newActivePiecePos = new List<int>();
             // remove a peça ativa da lista de valores da grelha de jogo
@@ -1372,7 +1382,7 @@ namespace tetris
         private void moveCheck(int i)
         {
             // se passar para fora da grid, ou caso a nova posição esteja ocupada
-            if (i > (gridSize - 1) || gameGridValues[i].Contains(busyType)) { canMove = false; autoScrollCanMove = false;}
+            if (i > (gridSize - 1) || gameGridValues[i].Contains(busyType)) { canMove = false; autoScrollCanMove = false; }
         }
 
         // listener ecrã gameover
@@ -1398,7 +1408,6 @@ namespace tetris
                         score = -(scoreMultiplier);
                         // reseta o gameover e o can move
                         canMove = true;
-                        autoScrollCanMove = true;
                         gameOver = false;
                         gameStart();
                     }
@@ -1412,9 +1421,31 @@ namespace tetris
         private void autoscroller(object source, ElapsedEventArgs e)
         {
             movePiece("down");
-            if (!autoScrollCanMove) {
-                spawnPiece();
+            if (!autoScrollCanMove)
+            {
+                scrollPiece();
                 autoScrollCanMove = true;
+            }
+            switch (score / 2000)
+            {
+                case 0:
+                    autoscrollerTimer.Interval = 1000;
+                    break;
+                case 1: //2000-3999
+                    autoscrollerTimer.Interval = 800;
+                    break;
+                case 2: //4000-5999
+                    autoscrollerTimer.Interval = 600;
+                    break;
+                case 3: //6000-7999
+                    autoscrollerTimer.Interval = 400;
+                    break;
+                case 4: //8000-9999
+                    autoscrollerTimer.Interval = 300;
+                    break;
+                default: //10000+
+                    autoscrollerTimer.Interval = 200;
+                    break;
             }
         }
 
