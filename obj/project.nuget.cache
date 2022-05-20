@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "b7yColV2Q/OR/gqv02lNzI00BCwz896h+UHA7Z9sn4GAZPFJTel+tgyFyit5/xXr4SvBHJNfFRziMLvTANMnWA==",
+  "dgSpecHash": "B7cIJXJZ13u4LbrcF5ZjM7vytpMev6BQysXHkTv8y0odekHk5B8KK75U7nqzbVla/a7HEK0Gnv6lNbx9IgsApg==",
   "success": true,
-  "projectFilePath": "C:\\fteixeira\\C#\\tetris\\v005\\tetris.csproj",
+  "projectFilePath": "D:\\Arquivo\\Web Design\\C#\\tetris\\live\\tetris.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

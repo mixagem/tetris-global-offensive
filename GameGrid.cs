@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace tetris
 {
@@ -30,7 +31,8 @@ namespace tetris
         private string gameOverScoreColor2 = "White";
         private string gameOverActionColor1 = "Yellow";
         private string gameOverActionColor2 = "Magenta";
-
+        // timmer do autoscroll
+        System.Timers.Timer autoscrollerTimer;
         // public game settings 
         public int scoreMultiplier = 25;
         public string fillType = ".";
@@ -100,6 +102,7 @@ namespace tetris
         private bool pieceFirstCycle = true;
         private bool gameOver = false;
         private bool canMove = true;
+        private bool autoScrollCanMove = true;
         // mensagem do combo
         private string propz;
 
@@ -153,18 +156,20 @@ namespace tetris
                 }
             }
 
-
-
             // faz spawn da primeira peça
             spawnPiece();
 
+            // iniciar timer do autoscroller
+            autoscrollerTimer = new System.Timers.Timer();
+            autoscrollerTimer.Elapsed += new ElapsedEventHandler(autoscroller);
+            autoscrollerTimer.Interval = 1000;
+            autoscrollerTimer.Enabled = true;
+            
             while (!gameOver)
             {
                 // listener para o jogador
                 playerKeyListener(Console.ReadKey().Key);
             }
-
-
         }
 
         // metodo para fazer spawn a uma nova peça
@@ -278,6 +283,7 @@ namespace tetris
             // limpa a consola, mostra o score, e pergunta o utilizador o que fazer
             if (gameOver)
             {
+                autoscrollerTimer.Stop();
                 Console.Clear();
                 for (int i = 0; i < gameOverSrite.Count; i++)
                 {
@@ -1367,7 +1373,7 @@ namespace tetris
         private void moveCheck(int i)
         {
             // se passar para fora da grid, ou caso a nova posição esteja ocupada
-            if (i > (gridSize - 1) || gameGridValues[i].Contains(busyType)) { canMove = false; }
+            if (i > (gridSize - 1) || gameGridValues[i].Contains(busyType)) { canMove = false; autoScrollCanMove = false;}
         }
 
         // listener ecrã gameover
@@ -1393,12 +1399,23 @@ namespace tetris
                         score = -(scoreMultiplier);
                         // reseta o gameover e o can move
                         canMove = true;
+                        autoScrollCanMove = true;
                         gameOver = false;
                         gameStart();
                     }
                     break;
                 default:
                     { break; }
+            }
+        }
+
+        // autoscroller
+        private void autoscroller(object source, ElapsedEventArgs e)
+        {
+            movePiece("down");
+            if (!autoScrollCanMove) {
+                spawnPiece();
+                autoScrollCanMove = true;
             }
         }
 
