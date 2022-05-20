@@ -153,11 +153,18 @@ namespace tetris
                 }
             }
 
-            // listener para o jogador
-            playerKeyListener(Console.ReadKey().Key);
+
 
             // faz spawn da primeira peça
             spawnPiece();
+
+            while (!gameOver)
+            {
+                // listener para o jogador
+                playerKeyListener(Console.ReadKey().Key);
+            }
+
+
         }
 
         // metodo para fazer spawn a uma nova peça
@@ -272,17 +279,22 @@ namespace tetris
             if (gameOver)
             {
                 Console.Clear();
-                for (int i = 0; i< gameOverSrite.Count; i++)
+                for (int i = 0; i < gameOverSrite.Count; i++)
                 {
-                    string beautyLine="";
+                    string beautyLine = "";
                     for (int i2 = 0; i2 < gameOverSrite[i].Length; i2++)
                     {
-                        if(gameOverSrite[i][i2]==' '){
-                            beautyLine+= " ";
-                        } else if (gameOverSrite[i][i2]=='█') {
-                            beautyLine+= "{FC="+gameOverSpriteColor1+"}█{/FC}";
-                        } else {
-                            beautyLine+= "{FC="+gameOverSpriteColor2+"}"+gameOverSrite[i][i2]+"{/FC}";
+                        if (gameOverSrite[i][i2] == ' ')
+                        {
+                            beautyLine += " ";
+                        }
+                        else if (gameOverSrite[i][i2] == '█')
+                        {
+                            beautyLine += "{FC=" + gameOverSpriteColor1 + "}█{/FC}";
+                        }
+                        else
+                        {
+                            beautyLine += "{FC=" + gameOverSpriteColor2 + "}" + gameOverSrite[i][i2] + "{/FC}";
                         }
                     }
                     ConsoleWriter.WriteLine(beautyLine);
@@ -313,7 +325,7 @@ namespace tetris
                 refreshGameGrid();
 
                 // listener para input do jogador
-                playerKeyListener(Console.ReadKey().Key);
+                //playerKeyListener(Console.ReadKey().Key);
             }
         }
 
@@ -587,8 +599,13 @@ namespace tetris
                     case ConsoleKey.F:
                         movePiece("flip");
                         break;
+                    default:
+                        break;
                 }
             }
+
+            // listener para input do player
+            //playerKeyListener(Console.ReadKey().Key);
         }
         // faz scroll da peça até onde puder
         private void scrollPiece()
@@ -1301,7 +1318,7 @@ namespace tetris
                 // resetar o canMove
                 canMove = true;
                 // listener para input do player
-                playerKeyListener(Console.ReadKey().Key);
+                // playerKeyListener(Console.ReadKey().Key);
             }
             // o jogo continua
             else
@@ -1342,9 +1359,7 @@ namespace tetris
                 // atualiza a grid com o novo sítio da peça (utiliza o +)
                 restoreLastActivePiecePos("active");
                 // atualiza a gamegrid
-                refreshGameGrid();
-                // listener para input do player
-                playerKeyListener(Console.ReadKey().Key);
+                refreshGameGrid(); ;
             }
         }
 

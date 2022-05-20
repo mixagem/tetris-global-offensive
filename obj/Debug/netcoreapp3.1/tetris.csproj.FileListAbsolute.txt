@@ -102,3 +102,16 @@ D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.csproj.CoreC
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.dll
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.pdb
 D:\Arquivo\Web Design\C#\tetris\v008\obj\Debug\netcoreapp3.1\tetris.genruntimeconfig.cache
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.exe
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.deps.json
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.runtimeconfig.json
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.runtimeconfig.dev.json
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.dll
+C:\fteixeira\C#\tetris\v005\bin\Debug\netcoreapp3.1\tetris.pdb
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.csprojAssemblyReference.cache
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.AssemblyInfoInputs.cache
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.AssemblyInfo.cs
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.csproj.CoreCompileInputs.cache
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.dll
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.pdb
+C:\fteixeira\C#\tetris\v005\obj\Debug\netcoreapp3.1\tetris.genruntimeconfig.cache

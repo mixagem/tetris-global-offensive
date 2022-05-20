@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace tetris
 {
@@ -18,9 +17,9 @@ namespace tetris
             mytetrisgame.fillType = ".";                // desenho* da grelha quando o espaço está vazio 
                                                         // *não podem ser utilizados espaços, nem os símbolos "X", "x", ou "+";            
             // cores da app
-            mytetrisgame.activePieceColor = "Green";        // Peça atual
-            mytetrisgame.placedPieceColor = "Yellow";       // Peças fixas
-            mytetrisgame.borderColor = "Gray";               // Border do Jogo
+            mytetrisgame.activePieceColor = "Yellow";        // Peça atual
+            mytetrisgame.placedPieceColor = "Red";       // Peças fixas
+            mytetrisgame.borderColor = "Cyan";               // Border do Jogo
 
             // configurações do jogo
             mytetrisgame.scoreMultiplier = 25;          // valor base do jogo.
